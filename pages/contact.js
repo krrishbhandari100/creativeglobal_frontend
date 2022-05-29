@@ -1,6 +1,41 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Contact = () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        let name, email, message;
+        name = document.getElementById('name');
+        email = document.getElementById('email');
+        message = document.getElementById('message');
+        let payLoad = {
+            "data": { name: name.value, email: email.value, message: message.value }
+        }
+        let res = await fetch('http://localhost:1337/api/contacts', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify(payLoad)
+        })
+
+        let data = await res.json();
+        if (data.data.id) {
+            toast.success('Your message has been sent', {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+
+            name.value = message.value = email.value = ""
+        }
+    }
     return (
         <section className="text-gray-600 body-font relative">
             <div className="container px-5 py-24 mx-auto">
@@ -8,7 +43,7 @@ const Contact = () => {
                     <h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">Contact Us</h1>
                     <p className="lg:w-2/3 mx-auto leading-relaxed text-base">Whatever cardigan tote bag tumblr hexagon brooklyn asymmetrical gentrify.</p>
                 </div>
-                <div className="lg:w-1/2 md:w-2/3 mx-auto">
+                <form className="lg:w-1/2 md:w-2/3 mx-auto" onSubmit={handleSubmit}>
                     <div className="flex flex-wrap -m-2">
                         <div className="p-2 w-1/2">
                             <div className="relative">
@@ -29,7 +64,7 @@ const Contact = () => {
                             </div>
                         </div>
                         <div className="p-2 w-full">
-                            <button className="flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Button</button>
+                            <button type='submit' className="flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Submit</button>
                         </div>
                         <div className="p-2 w-full pt-8 mt-8 border-t border-gray-200 text-center">
                             <a className="text-indigo-500">example@email.com</a>
@@ -61,7 +96,7 @@ const Contact = () => {
                             </span>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
         </section>
     )

@@ -100,7 +100,8 @@ const Slug = (props) => {
                         </div>
                         <div className="flex">
                             <span className="title-font font-medium text-2xl text-gray-900">₹{product[router.query.title].attributes.cost}</span>
-                            <button onClick={()=>props.addToCart(product[router.query.title].attributes.name, product[router.query.title].attributes.title, `${router.query.title}-${size}-${color}`, qty, product[router.query.title].attributes.cost, color, size, product[router.query.title].attributes.image.data.attributes.formats.thumbnail.url)} className="flex ml-auto text-white bg-yellow-500 border-0 py-2 px-6 focus:outline-none hover:bg-yellow-600 rounded">Add To Cart</button>
+
+                            {props.loggedin ? <button onClick={()=>props.addToCart(product[router.query.title].attributes.name, product[router.query.title].attributes.title, `${router.query.title}-${size}-${color}`, qty, product[router.query.title].attributes.cost, color, size, product[router.query.title].attributes.image.data.attributes.formats.thumbnail.url)} className="flex ml-auto text-white bg-yellow-500 border-0 py-2 px-6 focus:outline-none hover:bg-yellow-600 rounded">Add To Cart</button> : ""}
                         </div>
                     </div>
                 </div>

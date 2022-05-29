@@ -1,8 +1,8 @@
 import Link from 'next/link'
 import React from 'react'
-import {  } from "react-icons/fa";
+import Cart from '../public/cart.png'
 
-const Header = () => {
+const Header = (props) => {
     return (
         <header className="text-gray-600 body-font">
             <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
@@ -29,11 +29,22 @@ const Header = () => {
                 </form>
 
                 <div className='ml-3'>
-                    <Link href={'/login'}>
+
+                    {props.loggedin ? <div className='flex items-center'>
+                        <div>
+                            Welcome {props.user.first_name}
+                        </div>
+
+                        <div className='cursor-pointer'>
+                            <img onClick={props.toggleCart} src="/cart.png" alt="cart" />
+                        </div>
+                    </div> : <><Link href={'/login'}>
                         <a>
                             <img src="/login.png" alt="login" width={39} />
                         </a>
                     </Link>
+                    </>}
+
                 </div>
             </div>
         </header>
