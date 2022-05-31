@@ -1,26 +1,50 @@
-import Link from 'next/link';
-import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 const Slug = (props) => {
     const router = useRouter();
     const [product, setProduct] = useState(props.product);
-    const [size, setSize] = useState(props.product);
-    const [color, setColor] = useState(props.product);
-    const [qty, setQty] = useState(1);
-    useEffect(()=>{
-        let {slug} = router.query;
-        let color = slug.split('-')[slug.split('-').length - 1];
-        let size = document.getElementById('size').value;
+    const [variant, setVariant] = useState(props.variant);
+    const [key, setKey] = useState(Math.random());
 
-        setColor(color);
-        setSize(size);
+    const [color, setColor] = useState(product[router.query.title].attributes.color);
+    const [size, setSize] = useState(product[router.query.title].attributes.size);
+    const [cost, setCost] = useState(product[router.query.title].attributes.cost);
+    const [qty, setQty] = useState(product[router.query.title].attributes.qty);
+    const [prodqty, setProdQty] = useState(1);
+    
+    
+    const refreshVariant = (url)=>{
+        let slug = url.split('?')[0];
+        let title = url.split('?')[1].split('=')[1];
+        console.log(size, color);
+        // window.location.href = `/products/${url}`;
+        // router.push(url);
+        fetch(`${process.env.NEXT_PUBLIC_API_HOST2}/api/fetchBySlug?slug=${slug}`).then((res)=>{
+            return res.json();
+        }).then((data)=>{
+            setProduct(data);
+            setColor(data[title].attributes.color);
+            setSize(data[title].attributes.size);
+            setCost(data[title].attributes.cost);
+            setCost(data[title].attributes.cost);
+            setQty(data[title].attributes.qty);
+            setKey(Math.random());
+            router.push(url);
+        });
+    }
+    
+    useEffect(()=>{
+        setKey(Math.random());
+        console.log('Key Changed');
     }, [router.query])
+
     return (
-        <section className="text-gray-600 body-font overflow-hidden">
+        <section key={key} className="text-gray-600 body-font overflow-hidden">
             <div className="container px-5 py-24 mx-auto">
                 <div className="lg:w-4/5 mx-auto flex flex-wrap">
-                    <img alt="ecommerce" className="lg:w-1/2 w-full lg:h-auto h-64 object-center rounded" src={`http://localhost:1337${product[router.query.title].attributes.image.data.attributes.formats.thumbnail.url}`} />
+                    <img alt="ecommerce" className="lg:w-1/2 w-full lg:h-auto h-64 object-center rounded" src={`${process.env.NEXT_PUBLIC_API_HOST1}${product[router.query.title].attributes.image.data.attributes.formats.thumbnail.url}`} />
                     <div className="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
                         <h2 className="text-sm title-font text-gray-500 tracking-widest">{product[router.query.title].attributes.category}</h2>
                         <h1 className="text-gray-900 text-3xl title-font font-medium mb-1">{product[router.query.title].attributes.name}</h1>
@@ -62,26 +86,29 @@ const Slug = (props) => {
                             </span>
                         </div>
                         <p className="leading-relaxed">Fam locavore kickstarter distillery. Mixtape chillwave tumeric sriracha taximy chia microdosing tilde DIY. XOXO fam indxgo juiceramps cornhole raw denim forage brooklyn. Everyday carry +1 seitan poutine tumeric. Gastropub blue bottle austin listicle pour-over, neutra jean shorts keytar banjo tattooed umami cardigan.</p>
-                        <div className="flex mt-6 items-center pb-5 border-b-2 border-gray-100 mb-5">
-                            <div className="flex">
+
+                        <h1 className='text-xl text-red-400'>Variant:</h1>
+                        <p>Size: <b>{product[router.query.title].attributes.size}</b></p>
+                        <p>Colour: <b>{product[router.query.title].attributes.color}</b></p>
+                        <div className="flex mt-6 items-center pb-5 border-b-2 border-gray-100 mb-5 border-2 justify-center">
+                            <br />
+                            <div className="flex items-center">
                                 <span className="mr-3">Color</span>
 
-                                {product[router.query.title].color.map((colorVal) => {
-                                    return (
-                                        <Link href={`/products/${router.query.title}-${size}-${color}?title=${router.query.title}`} key={colorVal}><button style={{ background: `${colorVal}` }} className="border-2 border-gray-300 rounded-full w-6 h-6 focus:outline-none"></button></Link>
-                                    )
-                                })}
+                                {Object.keys(variant).includes('red') && <button name='red' onClick={(e)=>refreshVariant(`${router.query.title}-${size}-${e.currentTarget.name}?title=${router.query.title}`)} className={`border-2 rounded-full w-6 h-6 focus:outline-none bg-red-600 ${color=='red' ? "border-black" : "border-gray-300"}`}></button>}
+                                {Object.keys(variant).includes('brown') && <button name='brown' onClick={(e)=>refreshVariant(`${router.query.title}-${size}-${e.currentTarget.name}?title=${router.query.title}`)} className={`border-2 border-gray-300 rounded-full w-6 h-6 focus:outline-none bg-[brown] ${color=='brown' ? "border-black" : "border-gray-300"}`}></button>}
+                                
                                 
                             </div>
                             <div className="flex ml-6 items-center">
                                 <span className="mr-3">Size</span>
                                 <div className="relative">
-                                    <select id='size' onChange={(e)=>setSize(e.currentTarget.value)} className="rounded border appearance-none border-gray-300 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 text-base pl-3 pr-10">
-                                        {product[router.query.title].size.map((size) => {
-                                            return (
-                                                <option key={size}>{size}</option>
-                                            )
-                                        })}
+                                    <select value={size} onChange={(e)=>refreshVariant(`${router.query.title}-${e.currentTarget.value}-${color}?title=${router.query.title}`)} className="rounded border appearance-none border-gray-300 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 text-base pl-3 pr-10">
+                                        {Object.keys(variant[color]).includes('sm') && <option>sm</option>}
+                                        {Object.keys(variant[color]).includes('md') && <option>md</option>}
+                                        {Object.keys(variant[color]).includes('lg') && <option>lg</option>}
+                                        {Object.keys(variant[color]).includes('xl') && <option>xl</option>}
+                                        {Object.keys(variant[color]).includes('xxl') && <option>xxl</option>}
                                     </select>
                                     <span className="absolute right-0 top-0 h-full w-10 text-center text-gray-600 pointer-events-none flex items-center justify-center">
                                         <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="w-4 h-4" viewBox="0 0 24 24">
@@ -90,18 +117,17 @@ const Slug = (props) => {
                                     </span>
                                 </div>
                             </div>
-                            
-                            <div className="flex ml-6 items-center">
-                                <span className="mr-3">Quantity</span>
-                                <div className="relative">
-                                    <input type="number" min={1} className='border border-black w-16' value={qty} onChange={(e)=>setQty(parseInt(e.currentTarget.value))} />
-                                </div>
-                            </div>
                         </div>
-                        <div className="flex">
-                            <span className="title-font font-medium text-2xl text-gray-900">₹{product[router.query.title].attributes.cost}</span>
 
-                            {props.loggedin ? <button onClick={()=>props.addToCart(product[router.query.title].attributes.name, product[router.query.title].attributes.title, `${router.query.title}-${size}-${color}`, qty, product[router.query.title].attributes.cost, color, size, product[router.query.title].attributes.image.data.attributes.formats.thumbnail.url)} className="flex ml-auto text-white bg-yellow-500 border-0 py-2 px-6 focus:outline-none hover:bg-yellow-600 rounded">Add To Cart</button> : ""}
+                        {(qty == 0) ? <h1 className='text-red-400 text-2xl'>Out Of Stock</h1> : ""}
+                        
+                        <div>
+                            <input type="number" onChange={(e)=>setProdQty(e.currentTarget.value)} name="qty" id="qty" className='border-2 border-black' placeholder='Qty' min={1} value={prodqty} />
+                        </div>
+
+                        <div className="flex">
+                            <span className="title-font font-medium text-2xl text-gray-900">₹{cost}</span>
+                            <button disabled={qty===0} onClick={()=>props.addToCart(product[router.query.title].attributes.name, product[router.query.title].attributes.title, product[router.query.title].attributes.slug, prodqty, cost, color, size, product[router.query.title].attributes.image.data.attributes.formats.thumbnail.url)} className="flex ml-auto text-white bg-yellow-500 border-0 py-2 px-6 focus:outline-none hover:bg-yellow-600 rounded">Add to Cart</button>
                         </div>
                     </div>
                 </div>
@@ -112,9 +138,13 @@ const Slug = (props) => {
 
 export default Slug
 export async function getServerSideProps(context) {
-    const res = await fetch(`http://localhost:3000/api/products`);
-    const product = await res.json();
+    let res = await fetch(`${process.env.NEXT_PUBLIC_API_HOST2}/api/fetchBySlug?slug=${context.params.slug}`);
+    let product = await res.json();
 
-    // Pass data to the page via props
-    return { props: { product } }
+    let res1 = await fetch(`${process.env.NEXT_PUBLIC_API_HOST2}/api/variants?title=${context.query.title}`);
+    let variant = await res1.json();
+
+    return {
+        props: { product, variant }, // will be passed to the page component as props
+    }
 }

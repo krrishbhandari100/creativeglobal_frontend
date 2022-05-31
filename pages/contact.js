@@ -12,7 +12,7 @@ const Contact = () => {
         let payLoad = {
             "data": { name: name.value, email: email.value, message: message.value }
         }
-        let res = await fetch('http://localhost:1337/api/contacts', {
+        let res = await fetch(`${process.env.NEXT_PUBLIC_API_HOST1}/api/contacts`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -41,7 +41,9 @@ const Contact = () => {
             <div className="container px-5 py-24 mx-auto">
                 <div className="flex flex-col text-center w-full mb-12">
                     <h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">Contact Us</h1>
-                    <p className="lg:w-2/3 mx-auto leading-relaxed text-base">Whatever cardigan tote bag tumblr hexagon brooklyn asymmetrical gentrify.</p>
+                    <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
+                        Feel Free To ask your queries and give us suggesstions
+                    </p>
                 </div>
                 <form className="lg:w-1/2 md:w-2/3 mx-auto" onSubmit={handleSubmit}>
                     <div className="flex flex-wrap -m-2">
@@ -64,7 +66,7 @@ const Contact = () => {
                             </div>
                         </div>
                         <div className="p-2 w-full">
-                            <button type='submit' className="flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Submit</button>
+                            <button type='submit' className="flex mx-auto text-white bg-[#515295] border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Submit</button>
                         </div>
                         <div className="p-2 w-full pt-8 mt-8 border-t border-gray-200 text-center">
                             <a className="text-indigo-500">example@email.com</a>

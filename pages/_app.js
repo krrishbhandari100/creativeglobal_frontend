@@ -2,7 +2,7 @@ import Header from '../components/Header'
 import '../styles/globals.css'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Cartbox from '../components/Cartbox';
 
@@ -15,6 +15,8 @@ function MyApp({ Component, pageProps }) {
   const addToCart = (name, title, slug, qty, cost, color, size, img) => {
     let cartItems = [];
     let id = Math.floor(Math.random() * 1000 * Date.now());
+    qty = parseInt(qty);
+    cost = parseInt(cost);
     let total = cost * qty;
     let prod = { id, name, title, slug, qty, cost, color, size, total, img };
     if (localStorage.getItem('cartItems') == null) {
@@ -40,7 +42,7 @@ function MyApp({ Component, pageProps }) {
     });
   }
 
-  const removeItem = (index)=>{
+  const removeItem = (index) => {
     let items = JSON.parse(localStorage.getItem('cartItems'));
     const filteredItems = JSON.parse(localStorage.getItem('cartItems')).filter((item) => item.id !== parseInt(items[index].id));
     localStorage.setItem('cartItems', JSON.stringify(filteredItems));
@@ -51,7 +53,7 @@ function MyApp({ Component, pageProps }) {
   const toggleCart = () => {
     console.log("Clicked");
     let cartBox = document.getElementById('cartBox');
-    if(cartBox.style.display == "block"){
+    if (cartBox.style.display == "block") {
       cartBox.style.display = "none"
     }
     else {
@@ -62,7 +64,7 @@ function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     if (localStorage.getItem('token') != null) {
-      fetch(`http://localhost:1337/api/users/me`, {
+      fetch(`${process.env.NEXT_PUBLIC_API_HOST1}/api/users/me`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -78,9 +80,13 @@ function MyApp({ Component, pageProps }) {
           setUser({});
           setLoggedin(false);
         }
-      }).catch((err)=>{
-        console.log(err);
+      }).catch((err) => {
+        console.log("Connection Failed");
       })
+    }
+    else {
+      setUser({});
+      setLoggedin(false);
     }
   }, [router.query])
   return <>
@@ -95,7 +101,7 @@ function MyApp({ Component, pageProps }) {
       draggable
       pauseOnHover
     />
-    {loggedin ? <Cartbox toggleCart={toggleCart} key={key} removeItem={removeItem}/> : ""}
+    {loggedin ? <Cartbox toggleCart={toggleCart} key={key} removeItem={removeItem} /> : ""}
     <Header addToCart={addToCart} user={user} loggedin={loggedin} toggleCart={toggleCart} />
     <Component {...pageProps} addToCart={addToCart} user={user} loggedin={loggedin} />
   </>

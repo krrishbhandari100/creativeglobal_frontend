@@ -77,9 +77,7 @@ export default class Cartbox extends Component {
                           {(this.state.cart.length == 0) ? "You don't have cart items in your cart" : ""}
                           { this.state.cart && this.state.cart.map((item, index) => {
                             return (
-                              <>
-
-                                <li className="flex py-6">
+                                <li className="flex py-6" key={index}>
                                   <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                     <img src={`http://localhost:1337${item.img}`} alt="Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt." className="h-full w-full object-cover object-center" />
                                   </div>
@@ -107,7 +105,6 @@ export default class Cartbox extends Component {
                                     </div>
                                   </div>
                                 </li>
-                              </>
                             )
                           })}
                         </ul>
@@ -122,7 +119,7 @@ export default class Cartbox extends Component {
                     </div>
                     <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
                     <div className="mt-6">
-                      <Link href={(this.state.cart.length === 0) ? "javascript:void(0)" : "/checkout"}>
+                      <Link href={(this.state.cart.length === 0) ? "?" : "/checkout"}>
                         <a className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700">Checkout</a>
                       </Link>
 

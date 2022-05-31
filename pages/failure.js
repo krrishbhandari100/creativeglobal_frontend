@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 const Success = () => {
     const router = useRouter();
@@ -23,7 +24,7 @@ const Success = () => {
             <div class="container px-5 py-24 mx-auto">
                 <div class="flex flex-col text-center w-full mb-20">
                     <h1 class="sm:text-4xl text-3xl font-medium title-font mb-2 text-gray-900">Order Id: #{router.query.orderId}</h1>
-                    <p class="lg:w-2/3 mx-auto leading-relaxed text-base font-bold text-green-400">Congratulations, you have successfully placed your order!</p>
+                    <p class="lg:w-2/3 mx-auto leading-relaxed text-base text-red-600 font-bold">Sorry, Your order is not placed please go on <Link href={'/unpaidorders'}>unpaid orders</Link> section and try again</p>
                 </div>
                 <div class="lg:w-2/3 w-full mx-auto overflow-auto">
                     <table class="table-auto w-full text-left whitespace-no-wrap">

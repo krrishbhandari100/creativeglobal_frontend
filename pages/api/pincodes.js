@@ -1,7 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
-import { responseSymbol } from "next/dist/server/web/spec-compliant/fetch-event";
-
 export default async function handler(req, res) {
   let pincodes = {};
   let resp = await fetch('http://localhost:1337/api/pincodes');

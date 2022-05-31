@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Script from 'next/script'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Checkout = (props) => {
     const [cart, setCart] = useState([]);
@@ -7,7 +9,13 @@ const Checkout = (props) => {
     const [total, setTotal] = useState(0);
     const [state, setState] = useState('');
     const [city, setCity] = useState('');
-    const [promocode, setPromocode] = useState('Krrish50');
+    const [promocode, setPromocode] = useState('');
+    
+    const [first_name, setFirstName] = useState('');
+    const [last_name, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+
+
     useEffect(() => {
         let items = JSON.parse(localStorage.getItem('cartItems'));
         setCart(items);
@@ -25,7 +33,7 @@ const Checkout = (props) => {
     }
 
     const checkPincode = async (pincode) => {
-        let resp = await fetch('http://localhost:3000/api/pincodes');
+        let resp = await fetch(`${process.env.NEXT_PUBLIC_API_HOST2}/api/pincodes`);
         let data = await resp.json();
 
         Object.keys(data).every((pcode) => {
@@ -53,7 +61,7 @@ const Checkout = (props) => {
         let pincode = document.getElementById('pincode');
         let notes = document.getElementById('notes');
 
-        let res = await fetch('http://localhost:1337/api/orders/pretransaction', {
+        let res = await fetch(`${process.env.NEXT_PUBLIC_API_HOST1}/api/orders/pretransaction`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
@@ -98,6 +106,48 @@ const Checkout = (props) => {
             });
         }
     }
+
+    const checkPCode = async (code)=>{
+        let promocodeInfo = document.getElementById('promocodeInfo');
+        let res = await fetch(`${process.env.NEXT_PUBLIC_API_HOST2}/api/promocodes`);
+        let data = await res.json();
+        let pcodes = Object.keys(data);
+        // console.log(data[pcodes]['discount']);
+        if(pcodes.includes(code)){
+            promocodeInfo.innerHTML = "";
+            let discountValue = total * (100 - data[pcodes]['discount'])/100;
+            const div = document.createElement('div');
+            div.innerHTML = `<b>Promocode Applied</b>: <span class='text-red-700'>${code}</span>`;
+            div.innerHTML += `<br>`;
+            div.innerHTML += `<b>Discount Applied</b>: <span class='text-red-700'>₹-${total * (data[pcodes]['discount'])/100}</span>`;
+            promocodeInfo.appendChild(div);
+            setTotal(discountValue);
+            toast.success('Promocode Applied successfully', {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else {
+            toast.error('Promocode does not exists', {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            promocodeInfo.innerHTML = "";
+            setTotal(subTotal);
+        }
+        document.getElementById('promocode').disabled = true;
+        document.getElementById('applyBtn').disabled = true;
+    }
     return (
         <div>
             <Script defer type="application/javascript" crossorigin="anonymous" src={`https://${process.env.NEXT_PUBLIC_PAYTM_HOST}/merchantpgpui/checkoutjs/merchants/${process.env.NEXT_PUBLIC_PAYTM_MID}.js`}></Script>
@@ -107,21 +157,20 @@ const Checkout = (props) => {
             <div className="container p-12 mx-auto">
                 <div className="flex flex-col w-full px-0 mx-auto md:flex-row">
                     <div className="flex flex-col md:w-full">
-                        <h2 className="mb-4 font-bold md:text-xl text-heading ">Shipping Address
+                        <h2 className="mb-4 font-bold md:text-xl text-heading ">Details:
                         </h2>
                         <form className="justify-center w-full mx-auto" method="post" onSubmit={makeOrder}>
-                            <div className="">
+                            <div>
                                 <div className="space-x-0 lg:flex lg:space-x-4">
                                     <div className="w-full lg:w-1/2">
-                                        <label htmlFor="firstName" className="block mb-3 text-sm font-semibold text-gray-500">First
-                                            Name</label>
-                                        <input name="firstName" type="text" placeholder="First Name"
+                                        <label htmlFor="firstName" className="block mb-3 text-sm font-semibold text-gray-500">First Name</label>
+                                        <input onChange={(e)=>{setFirstName(e.currentTarget.value)}} name="firstName" type="text" placeholder="First Name"
                                             className="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600" value={(props.user) ? props.user.first_name : ""} />
                                     </div>
                                     <div className="w-full lg:w-1/2 ">
                                         <label htmlFor="firstName" className="block mb-3 text-sm font-semibold text-gray-500">Last
                                             Name</label>
-                                        <input name="Last Name" type="text" placeholder="Last Name"
+                                        <input onChange={(e)=>{setLastName(e.currentTarget.value)}} name="Last Name" type="text" placeholder="Last Name"
                                             className="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600" value={(props.user) ? props.user.last_name : ""} />
                                     </div>
                                 </div>
@@ -129,7 +178,7 @@ const Checkout = (props) => {
                                     <div className="w-full">
                                         <label htmlFor="Email"
                                             className="block mb-3 text-sm font-semibold text-gray-500">Email</label>
-                                        <input name="Last Name" id='email' type="text" placeholder="Email"
+                                        <input onChange={(e)=>{setEmail(e.currentTarget.value)}} name="email" id='email' type="text" placeholder="Email"
                                             className="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600" value={(props.user) ? props.user.email : ""} />
                                     </div>
                                 </div>
@@ -137,7 +186,7 @@ const Checkout = (props) => {
                                     <div className="w-full">
                                         <label htmlFor="Address"
                                             className="block mb-3 text-sm font-semibold text-gray-500">Address</label>
-                                        <textarea id='address'
+                                        <textarea required id='address'
                                             className="w-full px-4 py-3 text-xs border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                                             name="Address" cols="20" rows="4" placeholder="Address"></textarea>
                                     </div>
@@ -147,7 +196,7 @@ const Checkout = (props) => {
                                     <div className="w-full">
                                         <label htmlFor="Email"
                                             className="block mb-3 text-sm font-semibold text-gray-500">Pincode</label>
-                                        <input onChange={(e) => checkPincode(e.currentTarget.value)} name="Pincode" type="text" id='pincode' placeholder="Pincode"
+                                        <input required onChange={(e) => checkPincode(e.currentTarget.value)} name="Pincode" type="text" id='pincode' placeholder="Pincode"
                                             className="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600" />
                                     </div>
                                 </div>
@@ -178,15 +227,14 @@ const Checkout = (props) => {
                                     <div className="w-full">
                                         <label htmlFor="Email"
                                             className="block mb-3 text-sm font-semibold text-gray-500">Promocode</label>
-                                        <input name="Promocode" type="text" id='promocode' placeholder="Promocode"
+                                        <input name="Promocode" onChange={(e)=>setPromocode(e.currentTarget.value)} type="text" id='promocode' placeholder="Promocode"
                                             className="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600" />
-                                        <button className='py-2 px-3 mt-3 rounded-md bg-red-500 text-white'>Apply</button>
+                                        <button id='applyBtn' type='button' onClick={(e)=>checkPCode(promocode)} className='py-2 px-3 mt-3 rounded-md bg-red-500 text-white'>Apply</button>
                                     </div>
                                 </div>
 
                                 <div className="mt-4">
-                                    <button
-                                        className="w-full px-6 py-2 text-blue-200 bg-blue-600 hover:bg-blue-900">Process</button>
+                                    <button type='submit' className="w-full px-6 py-2 text-blue-200 bg-blue-600 hover:bg-blue-900">Process</button>
                                 </div>
                             </div>
                         </form>
@@ -197,12 +245,11 @@ const Checkout = (props) => {
                             <div className="mt-8">
                                 <div className="flex flex-col space-y-4">
 
-                                    {cart.map((item) => {
+                                    {cart.map((item, index) => {
                                         return (
-                                            <>
-                                                <div className="flex space-x-4">
+                                                <div className="flex space-x-4" key={index}>
                                                     <div>
-                                                        <img src={`http://localhost:1337${item.img}`} alt="image"
+                                                        <img src={`${process.env.NEXT_PUBLIC_API_HOST1}${item.img}`} alt="image"
                                                             className="w-60" />
                                                     </div>
                                                     <div>
@@ -214,12 +261,11 @@ const Checkout = (props) => {
                                                     <div>
                                                         <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none"
                                                             viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                                                                 d="M6 18L18 6M6 6l12 12" />
                                                         </svg>
                                                     </div>
                                                 </div>
-                                            </>
                                         )
                                     })}
                                 </div>
@@ -227,12 +273,13 @@ const Checkout = (props) => {
                             <div className="flex p-4 mt-4">
                                 <h2 className="text-xl font-bold">ITEMS {cart.length}</h2>
                             </div>
-                            <div
-                                className="flex items-center w-full py-4 text-sm font-semibold border-b border-gray-300 lg:py-5 lg:px-3 text-heading last:border-b-0 last:text-base last:pb-0">
+                            <div className="flex items-center w-full py-4 text-sm font-semibold border-b border-gray-300 lg:py-5 lg:px-3 text-heading last:border-b-0 last:text-base last:pb-0">
                                 Subtotal<span className="ml-2">₹{subTotal}</span></div>
 
-                            <div
-                                className="flex items-center w-full py-4 text-sm font-semibold border-b border-gray-300 lg:py-5 lg:px-3 text-heading last:border-b-0 last:text-base last:pb-0">
+                            <div id='promocodeInfo' className='px-2'>
+                            </div>
+
+                            <div className="flex items-center w-full py-4 text-sm font-semibold border-b border-gray-300 lg:py-5 lg:px-3 text-heading last:border-b-0 last:text-base last:pb-0">
                                 Total<span className="ml-2">₹{total}</span></div>
                         </div>
                     </div>

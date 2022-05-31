@@ -38,6 +38,10 @@ const Header = (props) => {
                         <div className='cursor-pointer'>
                             <img onClick={props.toggleCart} src="/cart.png" alt="cart" />
                         </div>
+
+                        <div className='cursor-pointer'>
+                            <Link href={'/logout'}><img src="/logout.png" alt="cart" /></Link>
+                        </div>
                     </div> : <><Link href={'/login'}>
                         <a>
                             <img src="/login.png" alt="login" width={39} />
