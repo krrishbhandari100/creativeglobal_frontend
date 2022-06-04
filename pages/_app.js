@@ -5,12 +5,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Cartbox from '../components/Cartbox';
+import LoadingBar from 'react-top-loading-bar'
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
   const [user, setUser] = useState({});
   const [loggedin, setLoggedin] = useState(false);
   const [key, setKey] = useState(0);
+  const [progress, setProgress] = useState(0)
 
   const addToCart = (name, title, slug, qty, cost, color, size, img) => {
     let cartItems = [];
@@ -63,6 +65,7 @@ function MyApp({ Component, pageProps }) {
   }
 
   useEffect(() => {
+    setProgress(100);
     if (localStorage.getItem('token') != null) {
       fetch(`${process.env.NEXT_PUBLIC_API_HOST1}/api/users/me`, {
         headers: {
@@ -101,6 +104,11 @@ function MyApp({ Component, pageProps }) {
       draggable
       pauseOnHover
     />
+    <LoadingBar
+        color='#515295'
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+      />
     {loggedin ? <Cartbox toggleCart={toggleCart} key={key} removeItem={removeItem} /> : ""}
     <Header addToCart={addToCart} user={user} loggedin={loggedin} toggleCart={toggleCart} />
     <Component {...pageProps} addToCart={addToCart} user={user} loggedin={loggedin} />

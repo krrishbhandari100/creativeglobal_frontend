@@ -127,7 +127,8 @@ const Slug = (props) => {
 
                         <div className="flex">
                             <span className="title-font font-medium text-2xl text-gray-900">₹{cost}</span>
-                            <button disabled={qty===0} onClick={()=>props.addToCart(product[router.query.title].attributes.name, product[router.query.title].attributes.title, product[router.query.title].attributes.slug, prodqty, cost, color, size, product[router.query.title].attributes.image.data.attributes.formats.thumbnail.url)} className="flex ml-auto text-white bg-yellow-500 border-0 py-2 px-6 focus:outline-none hover:bg-yellow-600 rounded">Add to Cart</button>
+                            {props.loggedin ? <button disabled={qty===0} onClick={()=>props.addToCart(product[router.query.title].attributes.name, product[router.query.title].attributes.title, product[router.query.title].attributes.slug, prodqty, cost, color, size, product[router.query.title].attributes.image.data.attributes.formats.thumbnail.url)} className="flex ml-auto text-white bg-yellow-500 border-0 py-2 px-6 focus:outline-none hover:bg-yellow-600 rounded">Add to Cart</button> : ""}
+                            
                         </div>
                     </div>
                 </div>
