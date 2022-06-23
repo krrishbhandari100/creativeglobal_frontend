@@ -9,6 +9,7 @@ import LoadingBar from 'react-top-loading-bar'
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
+
   const [user, setUser] = useState({});
   const [loggedin, setLoggedin] = useState(false);
   const [key, setKey] = useState(0);

@@ -11,39 +11,39 @@ const Products = (props) => {
 
                     {Object.keys(products).map((item, index) => {
                         return (
-                            <div key={index} className="lg:w-1/3 sm:w-1/2 p-4 shadow-md ml-3 mt-4">
-                                <div className="flex relative h-[300px]">
-                                    <img alt="gallery" className="absolute inset-0 w-full h-full object-center" src={`${process.env.NEXT_PUBLIC_API_HOST1}${products[item].attributes.image.data.attributes.formats.thumbnail.url}`} />
-                                    <div className="px-8 py-10 relative z-10 w-full border-4 border-gray-200 bg-white opacity-0 hover:opacity-100">
-                                        <h2 className="tracking-widest text-sm title-font font-medium text-indigo-500 mb-1">{products[item].attributes.category}</h2>
-                                        <h1 className="title-font text-lg font-medium text-gray-900 mb-3">{products[item].attributes.name}</h1>
-                                        <div>
-                                            Color:
-                                            <div className='flex mb-4 justify-self-auto w-[103px]'>
-                                                {products[item].color.map((color) => {
-                                                    return (
-                                                        <div key={color} className='rounded h-5 w-5 ml-2' style={{ background: `${color}` }}></div>
-                                                    )
-                                                })}
-                                            </div>
-                                        </div>
+                            <div className="max-w-sm bg-white rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
+                                <a href="#">
+                                    <img className="p-8 w-full rounded-t-lg" src={`${process.env.NEXT_PUBLIC_API_HOST1}${products[item].attributes.image.data.attributes.formats.thumbnail.url}`} alt="product image" />
+                                </a>
+                                <div className="px-5 pb-5">
+                                    <a href="#">
+                                        <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">{products[item].attributes.name}</h5>
+                                        <p className='text-xs text-gray-400'>{products[item].attributes.category}</p>
+                                    </a>
+                                    <div className="flex items-center mt-2.5 mb-5">
+                                        {products[item].color.map((color) => {
+                                            return (
+                                                <div key={color} className='rounded h-5 w-5 mx-1' style={{ background: `${color}` }}></div>
+                                            )
+                                        })}
 
-                                        <div>
-                                            Size:
-                                            <div className='flex mb-4 justify-between w-[103px]'>
-                                                {products[item].size.map((size) => {
-                                                    return (
-                                                        <>
-                                                            <div className='rounded text-center h-8 w-8 border border-black bg-black text-white'>{size}</div>
-                                                        </>
-                                                    )
-                                                })}
-                                            </div>
-                                        </div>
+                                    </div>
 
-                                        <div>
-                                            <Link href={`/products/${products[item].attributes.slug}?title=${products[item].attributes.title}`} passHref><button type="button" className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">View Details</button></Link>
-                                        </div>
+                                    <div className="flex items-center mt-2.5 mb-5">
+                                        {products[item].size.map((size) => {
+                                            return (
+                                                <>
+                                                    <div className='rounded text-center h-8 w-8 border border-black bg-black text-white mx-1'>{size}</div>
+                                                </>
+                                            )
+                                        })}
+
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-3xl font-bold text-gray-900 dark:text-white">${products[item].attributes.cost}</span>
+                                        <Link href={`/products/${products[item].attributes.slug}?title=${products[item].attributes.title}`} passHref>
+                                            <button type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">View More</button>
+                                        </Link>
                                     </div>
                                 </div>
                             </div>
@@ -58,7 +58,7 @@ const Products = (props) => {
 }
 
 export default Products
-export async function getServerSideProps() {
+export async function getStaticProps() {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_HOST2}/api/products`)
     const products = await res.json()
 

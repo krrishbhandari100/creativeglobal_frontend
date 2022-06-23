@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import React from 'react'
 import Cart from '../public/cart.png'
+import DropdownAuth from './DropdownAuth'
+import Dropdown from './Dropdown'
 
 const Header = (props) => {
     return (
@@ -29,11 +31,8 @@ const Header = (props) => {
                 </form>
 
                 <div className='ml-3'>
-
                     {props.loggedin ? <div className='flex items-center'>
-                        <div>
-                            Welcome {props.user.first_name}
-                        </div>
+                        <DropdownAuth />
 
                         <div className='cursor-pointer'>
                             <img onClick={props.toggleCart} src="/cart.png" alt="cart" />
@@ -42,12 +41,7 @@ const Header = (props) => {
                         <div className='cursor-pointer'>
                             <Link href={'/logout'}><img src="/logout.png" alt="cart" /></Link>
                         </div>
-                    </div> : <><Link href={'/login'}>
-                        <a>
-                            <img src="/login.png" alt="login" width={39} />
-                        </a>
-                    </Link>
-                    </>}
+                    </div> : <Dropdown />}
 
                 </div>
             </div>

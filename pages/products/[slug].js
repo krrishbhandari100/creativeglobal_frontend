@@ -37,7 +37,6 @@ const Slug = (props) => {
     
     useEffect(()=>{
         setKey(Math.random());
-        console.log('Key Changed');
     }, [router.query])
 
     return (
