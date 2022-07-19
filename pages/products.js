@@ -42,7 +42,7 @@ const Products = (props) => {
                                     <div className="flex justify-between items-center">
                                         <span className="text-3xl font-bold text-gray-900 dark:text-white">${products[item].attributes.cost}</span>
                                         <Link href={`/products/${products[item].attributes.slug}?title=${products[item].attributes.title}`} passHref>
-                                            <button type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">View More</button>
+                                            <button type="button" className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">View More</button>
                                         </Link>
                                     </div>
                                 </div>
