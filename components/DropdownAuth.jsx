@@ -10,7 +10,7 @@ const Dropdown = (props) => {
             </button>
             <ul className="dropdown-menu absolute hidden text-gray-700 pt-1 w-full">
                 <li><Link href="/logout"><a className="rounded-t bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" >Logout</a></Link></li>
-                <li><Link href="/register"><a className="rounded-t bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">SignUp</a></Link></li>
+                <li><Link href="/vieworder"><a className="rounded-t bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">View Orders</a></Link></li>
             </ul>
         </div>
     )

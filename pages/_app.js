@@ -11,6 +11,7 @@ function MyApp({ Component, pageProps }) {
   const router = useRouter();
 
   const [user, setUser] = useState({});
+  const [urls, setUrls] = useState(['/checkout', '/failure', '/success', '/vieworder']);
   const [loggedin, setLoggedin] = useState(false);
   const [key, setKey] = useState(0);
   const [progress, setProgress] = useState(0)
@@ -91,6 +92,25 @@ function MyApp({ Component, pageProps }) {
     else {
       setUser({});
       setLoggedin(false);
+    }
+
+    // Mannual login check for urls
+    if(urls.includes(router.pathname)){
+      fetch(`${process.env.NEXT_PUBLIC_API_HOST1}/api/users/me`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+      }).then((res) => {
+        return res.json()
+      }
+      ).then((data) => {
+        if (!data.id) {
+          router.push('/')
+        }
+      }).catch((err) => {
+        router.push('/')
+      })
     }
   }, [router.query])
   return <>

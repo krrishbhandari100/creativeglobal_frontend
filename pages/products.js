@@ -11,7 +11,7 @@ const Products = (props) => {
 
                     {Object.keys(products).map((item, index) => {
                         return (
-                            <div className="max-w-sm bg-white rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
+                            <div key={index} className="max-w-sm bg-white rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
                                 <a href="#">
                                     <img className="p-8 w-full rounded-t-lg" src={`${process.env.NEXT_PUBLIC_API_HOST1}${products[item].attributes.image.data.attributes.formats.thumbnail.url}`} alt="product image" />
                                 </a>

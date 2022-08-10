@@ -17,14 +17,14 @@ const Checkout = (props) => {
 
 
     useEffect(() => {
-        let items = JSON.parse(localStorage.getItem('cartItems'));
+        let items = JSON.parse(localStorage.getItem('cartItems')) || [];
         setCart(items);
         getSubTotal();
     }, [])
 
     const getSubTotal = () => {
         let sum = 0;
-        let items = JSON.parse(localStorage.getItem('cartItems'));
+        let items = JSON.parse(localStorage.getItem('cartItems')) || [];
         items.map((item) => {
             sum += item.total;
         })
@@ -112,7 +112,6 @@ const Checkout = (props) => {
         let res = await fetch(`${process.env.NEXT_PUBLIC_API_HOST2}/api/promocodes`);
         let data = await res.json();
         let pcodes = Object.keys(data);
-        // console.log(data[pcodes]['discount']);
         if(pcodes.includes(code)){
             promocodeInfo.innerHTML = "";
             let discountValue = total * (100 - data[pcodes]['discount'])/100;

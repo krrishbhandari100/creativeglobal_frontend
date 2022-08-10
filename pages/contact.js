@@ -22,6 +22,7 @@ const Contact = () => {
         })
 
         let data = await res.json();
+        console.table(data);
         if (data.data.id) {
             toast.success('Your message has been sent', {
                 position: "top-right",
